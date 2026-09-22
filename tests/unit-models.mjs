@@ -78,14 +78,25 @@ describe("MODELS projection", () => {
 });
 
 describe("resolveModel", () => {
-	const models = buildModels(getModels("anthropic"));
+	// Pin catalog fixture to avoid test breaking when upstream pi-ai adds newer opus generations
+	const models = [
+		mockPiAiModel("claude-opus-5"),
+		mockPiAiModel("claude-opus-4-8"),
+		mockPiAiModel("claude-fable-5"),
+		mockPiAiModel("claude-fable-5-1"),
+	];
 
-	it("opus shortcut resolves to claude-opus-5 (newest opus)", () => {
+	it("opus shortcut resolves to claude-opus-5 (newest opus in fixture)", () => {
 		assert.equal(resolveModel(models, "opus")?.id, "claude-opus-5");
 	});
 
 	it("exact id beats newer partial match (claude-fable-5 → fable-5, not 5-1)", () => {
 		assert.equal(resolveModel(models, "claude-fable-5")?.id, "claude-fable-5");
+	});
+
+	it("opus resolves to claude-opus-5-5 when present", () => {
+		const withOpus55 = [mockPiAiModel("claude-opus-5-5"), ...models];
+		assert.equal(resolveModel(withOpus55, "opus")?.id, "claude-opus-5-5");
 	});
 });
 

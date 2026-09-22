@@ -18,10 +18,10 @@ Raw JSON + MD per run save to `.test-output/context-size/` (gitignored).
 
 ## Environment
 
-- Claude Agent SDK `@anthropic-ai/claude-agent-sdk` 0.2.141 (bundled Claude Code 2.1.141)
+- Claude Agent SDK `@anthropic-ai/claude-agent-sdk` 0.3.280 (bundled Claude Code 2.1.280)
 - Auth: subscription OAuth (claude.ai), `ANTHROPIC_API_KEY` unset
 - Options: `settingSources: []`, `tools: []`, `maxTurns: 1`, `persistSession: false`
-- Date: 2026-06-26
+- Date: 2026-09-22
 
 ## Served context windows
 
@@ -32,8 +32,10 @@ the footnote below the table).
 
 | requested id              | Pro, credits off | Pro, credits on | Max, credits off | Max, credits on |
 |---------------------------|------------------|-----------------|------------------|-----------------|
-| `claude-opus-5`           | —                | —               | 200K             | —               |
-| `claude-opus-5[1m]`      | —                | —               | 1M               | —               |
+| `claude-opus-5-5`         | —                | —               | —                | 1M              |
+| `claude-opus-5-5[1m]`     | —                | —               | —                | 1M              |
+| `claude-opus-5`           | —                | —               | 200K             | 1M              |
+| `claude-opus-5[1m]`      | —                | —               | 1M               | 1M              |
 | `claude-opus-4-8`         | 200K             | 200K            | 200K             | 200K            |
 | `claude-opus-4-8[1m]`    | 1M               | 1M              | 1M               | 1M              |
 | `claude-opus-4-7`         | 1M               | 1M              | 1M               | 1M              |
