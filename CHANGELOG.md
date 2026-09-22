@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **Add: `claude-opus-5-5` to measured 1M list (issue #116)** — Opus 5.5 verified to serve 1M context on both bare and `[1m]` ids. Bumped `@anthropic-ai/claude-agent-sdk` to `^0.3.280` (Claude Code 2.1.280+ required for Opus 5.5).
+- **Add: `claude-opus-5-5` with plan-gated 1M context (issue #116)** — Opus 5.5 measured on Claude Code 2.1.280 serving 1M context on Max/Team tier with extra usage enabled. Gated by `plan === "max" || longContextExtraUsage` pending Pro-without-credits measurement to prevent turn 429s. Bumped `@anthropic-ai/claude-agent-sdk` to `^0.3.280` (Claude Code 2.1.280+ required for Opus 5.5). Updated `diag/CONTEXT-SIZE.md` with multi-run provenance and pinned `resolveModel` test fixture with a live catalog canary.
 
 ## 0.8.0 — 2026-09-20
 

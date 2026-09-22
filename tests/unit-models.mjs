@@ -78,7 +78,7 @@ describe("MODELS projection", () => {
 });
 
 describe("resolveModel", () => {
-	// Pin catalog fixture to avoid test breaking when upstream pi-ai adds newer opus generations
+	// Pinned fixture tests version rank tie-break independently of pi-ai catalog
 	const models = [
 		mockPiAiModel("claude-opus-5"),
 		mockPiAiModel("claude-opus-4-8"),
@@ -98,13 +98,26 @@ describe("resolveModel", () => {
 		const withOpus55 = [mockPiAiModel("claude-opus-5-5"), ...models];
 		assert.equal(resolveModel(withOpus55, "opus")?.id, "claude-opus-5-5");
 	});
+
+	it("canary: live pi-ai catalog resolves opus shortcut to a non-dated id", () => {
+		const liveModels = buildModels(getModels("anthropic"));
+		const resolved = resolveModel(liveModels, "opus");
+		assert.ok(resolved, "opus must resolve against live catalog");
+		assert.ok(!resolved.id.match(/-20\d{6}$/), "resolved model must not be dated alias");
+	});
 });
 
 describe("Claude Code runtime policy", () => {
 	it("measured-1M ids send [1m] on every plan", () => {
-		for (const id of ["claude-opus-5-5", "claude-opus-5", "claude-opus-4-8", "claude-opus-4-7", "claude-fable-5", "claude-fable-5-1", "claude-sonnet-5"]) {
+		for (const id of ["claude-opus-5", "claude-opus-4-8", "claude-opus-4-7", "claude-fable-5", "claude-fable-5-1", "claude-sonnet-5"]) {
 			assert.deepEqual(resolveClaudeCodeRuntimeModel(oneM(id), PRO), { cliModelId: `${id}[1m]`, contextWindow: 1000000 });
 		}
+	});
+
+	it("measured exception: opus-5-5 1M is plan-gated until Pro-credits-off verified", () => {
+		assert.deepEqual(resolveClaudeCodeRuntimeModel(oneM("claude-opus-5-5"), PRO), { cliModelId: "claude-opus-5-5", contextWindow: 200000 });
+		assert.deepEqual(resolveClaudeCodeRuntimeModel(oneM("claude-opus-5-5"), MAX), { cliModelId: "claude-opus-5-5[1m]", contextWindow: 1000000 });
+		assert.deepEqual(resolveClaudeCodeRuntimeModel(oneM("claude-opus-5-5"), EXTRA), { cliModelId: "claude-opus-5-5[1m]", contextWindow: 1000000 });
 	});
 
 	it("unmeasured ids serve bare at 200K even when pi-ai declares 1M (sonnet-4-5)", () => {
