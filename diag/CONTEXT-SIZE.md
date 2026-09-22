@@ -18,10 +18,17 @@ Raw JSON + MD per run save to `.test-output/context-size/` (gitignored).
 
 ## Environment
 
+### Run 2026-06-26
 - Claude Agent SDK `@anthropic-ai/claude-agent-sdk` 0.2.141 (bundled Claude Code 2.1.141)
 - Auth: subscription OAuth (claude.ai), `ANTHROPIC_API_KEY` unset
 - Options: `settingSources: []`, `tools: []`, `maxTurns: 1`, `persistSession: false`
-- Date: 2026-06-26
+- Raw runs: `.test-output/context-size/{pro,max}-2026-06-26T21-*.json`
+
+### Run 2026-09-22
+- Claude Agent SDK `@anthropic-ai/claude-agent-sdk` 0.3.280 (bundled Claude Code 2.1.280)
+- Auth: subscription OAuth (claude.ai Team plan, extra usage enabled), `ANTHROPIC_API_KEY` unset
+- Options: `settingSources: []`, `tools: []`, `maxTurns: 1`, `persistSession: false`
+- Raw run: `.test-output/context-size/max-2026-09-22T19-28-51-655Z.json`
 
 ## Served context windows
 
@@ -30,29 +37,35 @@ Four conditions, each run with the probe above. Values are tokens; `1M` =
 [Error shapes](#error-shapes)). One run predates full error-field capture (see
 the footnote below the table).
 
-| requested id              | Pro, credits off | Pro, credits on | Max, credits off | Max, credits on |
-|---------------------------|------------------|-----------------|------------------|-----------------|
-| `claude-opus-5`           | —                | —               | 200K             | —               |
-| `claude-opus-5[1m]`      | —                | —               | 1M               | —               |
-| `claude-opus-4-8`         | 200K             | 200K            | 200K             | 200K            |
-| `claude-opus-4-8[1m]`    | 1M               | 1M              | 1M               | 1M              |
-| `claude-opus-4-7`         | 1M               | 1M              | 1M               | 1M              |
-| `claude-opus-4-7[1m]`    | 1M               | 1M              | 1M               | 1M              |
-| `claude-opus-4-6`         | 200K             | 200K            | 200K             | 200K            |
-| `claude-opus-4-6[1m]`    | 429              | 1M              | 1M               | 1M              |
-| `claude-fable-5`          | 200K             | —               | —                | —               |
-| `claude-fable-5[1m]`     | 1M               | —               | —                | —               |
-| `claude-sonnet-5`         | 200K             | —               | —                | —               |
-| `claude-sonnet-5[1m]`    | 1M               | —               | —                | —               |
-| `claude-sonnet-4-6`       | 200K             | 200K            | 200K             | 200K            |
-| `claude-sonnet-4-6[1m]`  | 429              | 1M              | 429              | 1M              |
-| `claude-haiku-4-5`        | 200K             | 200K            | 200K             | 200K            |
-| `claude-haiku-4-5[1m]`   | 429†             | 400             | 400              | 400             |
+| requested id              | Pro, credits off | Pro, credits on | Max, credits off | Max, credits on | Run |
+|---------------------------|------------------|-----------------|------------------|-----------------|-----|
+| `claude-opus-5-5`         | —                | —               | —                | 1M              | 2026-09-22 |
+| `claude-opus-5-5[1m]`     | —                | —               | —                | 1M              | 2026-09-22 |
+| `claude-opus-5`           | —                | —               | 200K             | 1M              | 2026-09-22‡ |
+| `claude-opus-5[1m]`      | —                | —               | 1M               | 1M              | 2026-09-22‡ |
+| `claude-opus-4-8`         | 200K             | 200K            | 200K             | 200K            | 2026-06-26 |
+| `claude-opus-4-8[1m]`    | 1M               | 1M              | 1M               | 1M              | 2026-06-26 |
+| `claude-opus-4-7`         | 1M               | 1M              | 1M               | 1M              | 2026-06-26 |
+| `claude-opus-4-7[1m]`    | 1M               | 1M              | 1M               | 1M              | 2026-06-26 |
+| `claude-opus-4-6`         | 200K             | 200K            | 200K             | 200K            | 2026-06-26 |
+| `claude-opus-4-6[1m]`    | 429              | 1M              | 1M               | 1M              | 2026-06-26 |
+| `claude-fable-5`          | 200K             | —               | —                | —               | 2026-06-26 |
+| `claude-fable-5[1m]`     | 1M               | —               | —                | —               | 2026-06-26 |
+| `claude-sonnet-5`         | 200K             | —               | —                | —               | 2026-06-26 |
+| `claude-sonnet-5[1m]`    | 1M               | —               | —                | —               | 2026-06-26 |
+| `claude-sonnet-4-6`       | 200K             | 200K            | 200K             | 200K            | 2026-06-26 |
+| `claude-sonnet-4-6[1m]`  | 429              | 1M              | 429              | 1M              | 2026-06-26 |
+| `claude-haiku-4-5`        | 200K             | 200K            | 200K             | 200K            | 2026-06-26 |
+| `claude-haiku-4-5[1m]`   | 429†             | 400             | 400              | 400             | 2026-06-26 |
 
-Raw runs: `.test-output/context-size/{pro,max}-2026-06-26T21-*.json`
+Raw runs:
+- 2026-06-26: `.test-output/context-size/{pro,max}-2026-06-26T21-*.json`
+- 2026-09-22: `.test-output/context-size/max-2026-09-22T19-28-51-655Z.json`
 
 `—` = not yet tested in that condition. Max-credits-on matched Pro-credits-on
 for every cell tested in both (shown for completeness).
+
+‡ **Re-measured on 2026-09-22.** Max, credits off cell predates this run (measured 2026-06-26); Max, credits on measured under CC 2.1.280 where bare id served 1M with extra usage.
 
 † **Inferred, not directly measured.** The Pro-credits-off run predates
 error-field capture; its three rejected `[1m]` rows have no recorded HTTP status

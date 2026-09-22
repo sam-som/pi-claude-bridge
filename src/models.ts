@@ -90,6 +90,8 @@ const MEASURED_ONE_M = new Set([
 // Measured exceptions: pi-ai declares 1M and the [1m] id works, but only when
 // the plan allows it.
 const PLAN_GATED_ONE_M: Record<string, (settings: LongContextSettings) => boolean> = {
+	// [1m] measured 1M on Max/Team plan with extra usage; Pro without credits unverified.
+	"claude-opus-5-5": (settings) => settings.plan === "max" || settings.longContextExtraUsage,
 	// [1m] measured 1M on Max plan / extra usage; 429 on Pro without it.
 	"claude-opus-4-6": (settings) => settings.plan === "max" || settings.longContextExtraUsage,
 	// [1m] measured 1M with extra usage only.
